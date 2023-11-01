@@ -33,27 +33,51 @@ function sendNumberValue(number) {
   }
 }
 
+// calculate first and second values depending on operator
+const calculate = {
+  "/": (firstNumber, secondNumber) => {
+    return firstNumber / secondNumber;
+  },
+  "*": (firstNumber, secondNumber) => {
+    return firstNumber * secondNumber;
+  },
+  "+": (firstNumber, secondNumber) => {
+    return firstNumber + secondNumber;
+  },
+  "-": (firstNumber, secondNumber) => {
+    return firstNumber - secondNumber;
+  },
+  "=": (firstNumber, secondNumber) => {
+    return secondNumber;
+  },
+};
+
 function useOperator(operator) {
   const currentValue = Number(calculatorDisplay.textContent);
+  // prevent don´t presse 2 operators at the same time
+  if (awaitingNextValue) {
+    operatorValue = operator; // reset the operator for the new operator when we are making more operation
+    return;
+  }
   // assign this value to firstValue if this firstValue doesn´t exist
   if (!firstValue) {
     firstValue = currentValue;
   } else {
-    console.log("current", currentValue);
+    console.log(firstValue, operatorValue, currentValue);
+    const calculation = calculate[operatorValue](firstValue, currentValue);
+    console.log("calculation", calculation);
+    firstValue = calculation;
+    calculatorDisplay.textContent = calculation;
   }
   // ready for the next value
   awaitingNextValue = true;
   operatorValue = operator;
-  // if(awaitingNextValue){}
-  console.log(firstValue);
-  console.log("operator", operator);
 }
 
 // function add a decimal
 function addDecimal() {
   // if an operator pressed don´t add decimal
   if (awaitingNextValue) return; // dont run the next lines of code
-
   // if no decimal add one
   if (!calculatorDisplay.textContent.includes(".")) {
     calculatorDisplay.textContent += ".";
